@@ -1,0 +1,22 @@
+{
+    "location": {
+        "name": "Lisboa",
+        "region": "Lisboa",
+        "country": "Portugal",
+        "lat": 38.7167,
+        "lon": -9.1333,
+        "tz_id": "Europe/Lisbon",
+        "localtime_epoch": 1745773386,
+        "localtime": "2025-04-27 18:03"
+    },
+    "current": {
+        "temp_c": 26.4,
+        "is_day": 1,
+        "condition": {
+            "text": "Sunny",
+            "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+            "code": 1000
+        },
+        "feelslike_c": 26.7
+    }
+}
