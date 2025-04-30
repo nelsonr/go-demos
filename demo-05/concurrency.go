@@ -29,20 +29,20 @@ func getGoFileLinesCount(path string) int {
 		log.Fatal(err)
 	}
 
-	goFilePaths := make([]string, 0)
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".go") {
-			goFilePaths = append(goFilePaths, filepath.Join(path, file.Name()))
-		}
-	}
+			goFilePath := filepath.Join(path, file.Name())
 
-	for _, goFilePath := range goFilePaths {
-		wg.Add(1)
-		go func() {
-			fmt.Printf("Counting lines of file %s\n", goFilePath)
-			linesSum += countLines(goFilePath)
-			wg.Done()
-		}()
+			// Spawn worker that counts number of lines of a file
+			wg.Add(1)
+
+			go func() {
+				fmt.Printf("Counting lines of file %s\n", goFilePath)
+				linesSum += countLines(goFilePath)
+
+				wg.Done()
+			}()
+		}
 	}
 
 	wg.Wait()
@@ -67,24 +67,23 @@ func main() {
 	}
 
 	// Filter to just the directories
-	dirPaths := make([]string, 0)
 	for _, entry := range entries {
 		if entry.IsDir() {
-			dirPaths = append(dirPaths, filepath.Join(path, entry.Name()))
-		}
-	}
+			dirPath := filepath.Join(path, entry.Name())
 
-	// Spawn worker to count the sum of lines of each Go file within each directory
-	for _, dirPath := range dirPaths {
-		wg.Add(1)
-		go func() {
-			fmt.Printf("Counting line sum of path: %s\n", dirPath)
-			totalLinesSum += getGoFileLinesCount(dirPath)
-			wg.Done()
-		}()
+			// Spawn worker to count the sum of lines of each Go file within each directory
+			wg.Add(1)
+
+			go func() {
+				fmt.Printf("Counting line sum of path: %s\n", dirPath)
+				totalLinesSum += getGoFileLinesCount(dirPath)
+
+				wg.Done()
+			}()
+		}
 	}
 
 	wg.Wait()
 
-	fmt.Printf("The total lines count of all Go files is: %d", totalLinesSum)
+	fmt.Printf("\nThe total lines count of all Go files is: %d", totalLinesSum)
 }
